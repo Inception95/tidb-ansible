@@ -13,6 +13,8 @@ You can use the TiDB-Ansible configuration file to set up the cluster topology, 
 - Cleaning the environment
 - Configuring monitoring modules
 
+Since the original ansible tidb does not support Python3, and the auto-tikv repository requires Python3.6 and tidb-ansible, plan to add and change scripts or yml files to compatible with Python3
+
 ## Tutorial
 
 - [English](https://pingcap.com/docs/dev/how-to/deploy/orchestrated/ansible/)
