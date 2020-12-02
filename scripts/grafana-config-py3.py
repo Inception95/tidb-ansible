@@ -52,13 +52,13 @@ def export_dashboard(api_url, api_key, dashboard_name):
                           headers={'Authorization': "Bearer {}".format(api_key)})
 
     resp = urllib.request.urlopen(req)
-    data = json.load(resp)
+    resp_json = resp.read().decode("utf-8")
+    data = json.loads(resp_json)
     return data['dashboard']
 
 def fill_dashboard_with_dest_config(dashboard, dest, type_='node'):
     dashboard['title'] = dest['titles'][type_]
     dashboard['id'] = None
-    # pprint(dashboard)
     if 'rows' in dashboard:
         panels = dashboard['rows']
     else:
@@ -103,10 +103,11 @@ def import_dashboard(api_url, api_key, dashboard):
                           data=json.dumps(payload).encode("utf-8"))
     try:
         resp = urllib.request.urlopen(req)
-        data = json.load(resp)
+        resp_json = resp.read().decode("utf-8")
+        data = json.loads(resp_json)
         return data
     except urllib.error.HTTPError as error:
-        data = json.load(error)
+        data = json.loads(error)
         return data
         
 def import_dashboard_via_user_pass(api_url, user, password, dashboard):
@@ -120,7 +121,6 @@ def import_dashboard_via_user_pass(api_url, user, password, dashboard):
     #auth_string = base64.b64encode(info_string.encode())
     headers = {'Authorization': "Basic {}".format(auth_string),
                'Content-Type': 'application/json'}
-    print("inside function get url", api_url)
     req = urllib.request.Request(api_url + 'api/dashboards/db',
                           headers=headers,
                           data=(json.dumps(payload)).encode("utf-8"))
@@ -128,7 +128,6 @@ def import_dashboard_via_user_pass(api_url, user, password, dashboard):
     try:
         resp = urllib.request.urlopen(req)
         resp_json = resp.read().decode("utf-8")
-        print(resp_json)
         data = json.loads(resp_json)
         return data
     except urllib.error.URLError as error:
@@ -147,14 +146,12 @@ if __name__ == '__main__':
             print("[import] <{}> to [{}]".format(
                 dashboard['title'], dest['name']), end='\t............. ')
             if 'user' in dest:
-                print("get user")
                 ret = import_dashboard_via_user_pass(dest['url'], dest['user'], dest['password'], dashboard)
                 print(ret)
             else:
                 ret = import_dashboard(dest['url'], dest['key'], dashboard)
 
             if isinstance(ret,dict):
-                print("get instance")
                 if ret['status'] != 'success':
                     print('ERROR: ', ret)
                     raise RuntimeError
