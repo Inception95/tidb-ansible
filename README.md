@@ -14,6 +14,7 @@ You can use the TiDB-Ansible configuration file to set up the cluster topology, 
 - Configuring monitoring modules
 
 *Since the original ansible tidb does not support Python3, and the auto-tikv repository requires Python3.6 and tidb-ansible, plan to add and change scripts or yml files to compatible with Python3. Add the grafna config script for Python3.
+*When do the kv node checking, it might requires to delete some deprecated arguments in yml based on your node OS version.
 
 ## Tutorial
 
